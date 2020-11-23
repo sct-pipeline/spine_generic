@@ -203,11 +203,10 @@ if [[ -e "${file_t1w}.nii.gz" && -e "${file_mton}.nii.gz" && -e "${file_mtoff}.n
   sct_crop_image -i ${file_t1w}.nii.gz -m ${file_t1w}_mask.nii.gz -o ${file_t1w}_crop.nii.gz
   file_t1w="${file_t1w}_crop"
   # Register PD->T1w
-  # Tips: here we only use rigid transformation because both images have very similar sequence parameters. We don't want to use SyN/BSplineSyN to avoid introducing spurious deformations.
-  sct_register_multimodal -i ${file_mtoff}.nii.gz -d ${file_t1w}.nii.gz -dseg ${file_t1w_seg}.nii.gz -param step=1,type=im,algo=rigid,slicewise=1,metric=CC -x spline -qc ${PATH_QC} -qc-subject ${SUBJECT}
+  sct_register_multimodal -i ${file_mtoff}.nii.gz -d ${file_t1w}.nii.gz -dseg ${file_t1w_seg}.nii.gz -param step=1,type=im,algo=slicereg,metric=CC,iter=10 -x spline -qc ${PATH_QC} -qc-subject ${SUBJECT}
   file_mtoff="${file_mtoff}_reg"
   # Register MT->T1w
-  sct_register_multimodal -i ${file_mton}.nii.gz -d ${file_t1w}.nii.gz -dseg ${file_t1w_seg}.nii.gz -param step=1,type=im,algo=rigid,slicewise=1,metric=CC -x spline -qc ${PATH_QC} -qc-subject ${SUBJECT}
+  sct_register_multimodal -i ${file_mton}.nii.gz -d ${file_t1w}.nii.gz -dseg ${file_t1w_seg}.nii.gz -param step=1,type=im,algo=slicereg,metric=CC,iter=10 -x spline -qc ${PATH_QC} -qc-subject ${SUBJECT}
   file_mton="${file_mton}_reg"
   # Copy json files to match file basename (it will later be used by sct_compute_mtsat)
   cp ${SUBJECT}_acq-T1w_MTS.json ${file_t1w}.json
