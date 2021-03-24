@@ -11,6 +11,9 @@ home = str(Path.home())
 path_data = input ('Please specify the path for the defaced dataset: \n')
 output_path = input ('Please specify the path for the qc report output folder: \n')
 
+if not os.path.isdir(output_path):
+    os.makedirs(output_path)
+
 for dirName, subdirList, fileList in os.walk(path_data):
     for file in fileList:
         if file.endswith('T1w.nii.gz') or file.endswith('T2w.nii.gz'):
